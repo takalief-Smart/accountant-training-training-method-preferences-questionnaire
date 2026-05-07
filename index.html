@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استبيان تفضيلات طريقة التدريب - تكاليف | الدورات التدريبية للمحاسبين الجدد</title>
+    <!-- Bootstrap RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- SheetJS -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <!-- html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #1e4a3b 0%, #2d6a4e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .main-header {
+            background: linear-gradient(135deg, #0e3b2c 0%, #1b5e3f 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 50px 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-bottom: 3px solid #52b788;
+        }
+        
+        .company-badge {
+            background: rgba(82, 183, 136, 0.3);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
+            border: 1px solid #52b788;
+            color: white;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            margin-bottom: 2rem;
+            background-color: #f8faf8;
+            border: 1px solid #e4f2e4;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #1e4a3b 0%, #2d6a4e 100%);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            border-bottom: 2px solid #52b788;
+        }
+        
+        .btn-custom {
+            background: #52b788;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-custom:hover {
+            background: #2d6a4e;
+            transform: scale(1.05);
+            color: white;
+        }
+        
+        .btn-excel {
+            background: #1e4a3b;
+            color: white;
+            border: 2px solid #52b788;
+        }
+        
+        .btn-excel:hover {
+            background: #2d6a4e;
+            color: white;
+        }
+        
+        .btn-pdf {
+            background: #4a6b5a;
+            color: white;
+            border: 2px solid #52b788;
+        }
+        
+        .form-label {
+            color: #2d6a4e;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid #e4f2e4;
+            border-radius: 10px;
+            padding: 0.75rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #52b788;
+            box-shadow: 0 0 0 0.2rem rgba(82, 183, 136, 0.25);
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e4f2e4;
+            transition: all 0.3s ease;
+        }
+        
+        .section-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-color: #52b788;
+        }
+        
+        .section-title {
+            color: #1e4a3b;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid #52b788;
+            display: inline-block;
+        }
+        
+        .section-title i {
+            color: #52b788;
+            margin-left: 10px;
+        }
+        
+        .info-box {
+            background: #e8f5e9;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-right: 4px solid #52b788;
+        }
+        
+        .declaration-box {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid #dee2e6;
+            margin-top: 1.5rem;
+        }
+        
+        .required-field::after {
+            content: "*";
+            color: #dc3545;
+            margin-right: 4px;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #0e3b2c 0%, #1b5e3f 100%);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+            border-radius: 50px 50px 0 0;
+            border-top: 3px solid #52b788;
+        }
+        
+        .footer-links {
+            color: #e4f2e4;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links:hover {
+            color: #52b788;
+        }
+        
+        .contact-item {
+            margin-bottom: 10px;
+            color: #e4f2e4;
+        }
+        
+        .contact-item i {
+            color: #52b788;
+            margin-left: 10px;
+            width: 20px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(82, 183, 136, 0.2);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 5px;
+            color: #52b788;
+            transition: all 0.3s ease;
+            border: 1px solid #52b788;
+        }
+        
+        .social-icon:hover {
+            background: #52b788;
+            color: #0e3b2c;
+            transform: translateY(-3px);
+        }
+        
+        .nav-tabs-custom {
+            border-bottom: 3px solid #52b788;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #1e4a3b 0%, #2d6a4e 100%);
+            border-radius: 50px;
+            padding: 0.5rem;
+        }
+        
+        .nav-tabs-custom .nav-link {
+            color: white !important;
+            font-weight: 600;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tabs-custom .nav-link i {
+            color: white;
+        }
+        
+        .nav-tabs-custom .nav-link.active {
+            color: #1e4a3b !important;
+            background: #52b788;
+            border: 2px solid white;
+        }
+        
+        .preview-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 2px solid #52b788;
+            margin-bottom: 1.5rem;
+        }
+        
+        .preview-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px dashed #e4f2e4;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .preview-label {
+            font-weight: 600;
+            color: #1e4a3b;
+            width: 45%;
+        }
+        
+        .preview-value {
+            color: #2d6a4e;
+            width: 55%;
+            text-align: left;
+        }
+        
+        .preference-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 3px;
+        }
+        
+        .preference-high {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .preference-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .preference-low {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .learning-style {
+            background: #e8f5e9;
+            border-right: 4px solid #52b788;
+            padding: 0.75rem;
+            border-radius: 10px;
+        }
+        
+        .rating-stars {
+            color: #ffc107;
+            font-size: 1rem;
+            letter-spacing: 2px;
+        }
+        
+        #pdf-export-container {
+            position: fixed;
+            top: -99999px;
+            left: -99999px;
+            width: 800px;
+            background: white;
+            z-index: 9999;
+            padding: 30px;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .pdf-wrapper {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            direction: rtl;
+        }
+        
+        .pdf-cover {
+            background: linear-gradient(135deg, #0e3b2c 0%, #1b5e3f 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .pdf-section-title {
+            color: #1e4a3b;
+            font-size: 20px;
+            font-weight: 800;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #52b788;
+        }
+        
+        .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 11px;
+            border: 1px solid #52b788;
+        }
+        
+        .pdf-table th {
+            background: #1e4a3b;
+            color: white;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .pdf-table td {
+            padding: 6px;
+            border: 1px solid #e4f2e4;
+            text-align: center;
+        }
+        
+        .pdf-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #0e3b2c 0%, #1b5e3f 100%);
+            color: white;
+            border-radius: 15px;
+        }
+        
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white;
+                padding: 0;
+            }
+            .card, .section-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="main-header text-center no-print">
+        <div class="container">
+            <span class="company-badge mb-3">
+                <i class="fas fa-chalkboard-user me-2"></i>تكاليف | حلول أعمال ذكية
+            </span>
+            <h1 class="display-4 fw-bold mt-3" style="color: white;">
+                <i class="fas fa-chalkboard me-3"></i>
+                استبيان تفضيلات طريقة التدريب
+            </h1>
+            <p class="lead" style="color: white;">تحديد أسلوب التعلم المفضل والاحتياجات التقنية لتخصيص تجربة تدريبية مثالية</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Tabs -->
+        <ul class="nav nav-tabs-custom nav-fill" id="myTab" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="data-entry-tab" data-bs-toggle="tab" data-bs-target="#dataEntry" type="button" role="tab">
+                    <i class="fas fa-edit me-2"></i> استبيان التفضيلات
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="preview-tab" data-bs-toggle="tab" data-bs-target="#preview" type="button" role="tab">
+                    <i class="fas fa-eye me-2"></i> معاينة التقرير
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- Tab 1: Data Entry -->
+            <div class="tab-pane fade show active" id="dataEntry" role="tabpanel">
+                <!-- البيانات الشخصية -->
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-user-graduate"></i> البيانات الشخصية</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required-field">الاسم الثلاثي</label>
+                            <input type="text" class="form-control" id="fullName" placeholder="مثال: أحمد محمد علي">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required-field">البريد الإلكتروني</label>
+                            <input type="email" class="form-control" id="email" placeholder="example@gmail.com">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">رقم الهاتف</label>
+                            <input type="tel" class="form-control" id="phone" placeholder="01234567890">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">المدينة / المنطقة</label>
+                            <input type="text" class="form-control" id="city" placeholder="المدينة أو المنطقة">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- المعلومات الأساسية -->
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-info-circle"></i> المعلومات الأساسية</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">الوضع الوظيفي الحالي</label>
+                            <select class="form-select" id="employmentStatus">
+                                <option value="">اختر</option>
+                                <option value="طالب - لم أتخرج بعد">طالب - لم أتخرج بعد</option>
+                                <option value="حديث التخرج - أبحث عن عمل">حديث التخرج - أبحث عن عمل</option>
+                                <option value="موظف بدوام كامل">موظف بدوام كامل</option>
+                                <option value="موظف بدوام جزئي">موظف بدوام جزئي</option>
+                                <option value="أخرى">أخرى</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3" id="otherJobDiv" style="display: none;">
+                            <label class="form-label">يرجى تحديد الوضع الوظيفي الآخر</label>
+                            <input type="text" class="form-control" id="otherJobStatus" placeholder="الوضع الوظيفي">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">عدد ساعات العمل الأسبوعية</label>
+                            <select class="form-select" id="workHours">
+                                <option value="">اختر</option>
+                                <option value="لا أعمل حالياً">لا أعمل حالياً</option>
+                                <option value="أقل من 20 ساعة">أقل من 20 ساعة</option>
+                                <option value="20 - 30 ساعة">20 - 30 ساعة</option>
+                                <option value="30 - 40 ساعة">30 - 40 ساعة</option>
+                                <option value="أكثر من 40 ساعة">أكثر من 40 ساعة</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">الخبرة السابقة في التدريب عن بُعد</label>
+                            <select class="form-select" id="previousOnlineTraining">
+                                <option value="">اختر</option>
+                                <option value="لا توجد خبرة">لا توجد خبرة</option>
+                                <option value="خبرة محدودة (دورة أو اثنتين)">خبرة محدودة (دورة أو اثنتين)</option>
+                                <option value="خبرة متوسطة (3-5 دورات)">خبرة متوسطة (3-5 دورات)</option>
+                                <option value="خبرة واسعة (أكثر من 5 دورات)">خبرة واسعة (أكثر من 5 دورات)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- تفضيلات طريقة التدريس -->
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-chalkboard"></i> تفضيلات طريقة التدريس</h3>
+                    <div class="info-box mb-3">
+                        <i class="fas fa-info-circle text-success me-2"></i>
+                        <strong>ملاحظة:</strong> يرجى تحديد مدى تفضيلك لكل أسلوب من أساليب التدريس (1 = غير مفضل، 5 = مفضل جداً).
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">المحاضرات المباشرة (Live Lectures)</label>
+                            <select class="form-select" id="prefLiveLectures">
+                                <option value="">اختر المستوى</option>
+                                <option value="1 - غير مفضل">1 - غير مفضل</option>
+                                <option value="2 - قليل التفضيل">2 - قليل التفضيل</option>
+                                <option value="3 - محايد">3 - محايد</option>
+                                <option value="4 - مفضل">4 - مفضل</option>
+                                <option value="5 - مفضل جداً">5 - مفضل جداً</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">المحتوى المسجل مسبقاً (Recorded Videos)</label>
+                            <select class="form-select" id="prefRecorded">
+                                <option value="">اختر المستوى</option>
+                                <option value="1 - غير مفضل">1 - غير مفضل</option>
+                                <option value="2 - قليل التفضيل">2 - قليل التفضيل</option>
+                                <option value="3 - محايد">3 - محايد</option>
+                                <option value="4 - مفضل">4 - مفضل</option>
+                                <option value="5 - مفضل جداً">5 - مفضل جداً</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">التدريب العملي والتطبيقات (Hands-on Practice)</label>
+                            <select class="form-select" id="prefPractical">
+                                <option value="">اختر المستوى</option>
+                                <option value="1 - غير مفضل">1 - غير مفضل</option>
+                                <option value="2 - قليل التفضيل">2 - قليل التفضيل</option>
+                                <option value="3 - محايد">3 - محايد</option>
+                                <option value="4 - مفضل">4 - مفضل</option>
+                                <option value="5 - مفضل جداً">5 - مفضل جداً</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">دراسات الحالة والسيناريوهات الواقعية (Case Studies)</label>
+                            <select class="form-select" id="prefCaseStudies">
+                                <option value="">اختر المستوى</option>
+                                <option value="1 - غير مفضل">1 - غير مفضل</option>
+                                <option value="2 - قليل التفضيل">2 - قليل التفضيل</option>
+                                <option value="3 - محايد">3 - محايد</option>
+                                <option value="4 - مفضل">4 - مفضل</option>
+                                <option value="5 - مفضل جداً">5 - مفضل جداً</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">الأنشطة التفاعلية والنقاشات الجماعية</label>
+                            <select class="form-select" id="prefInteractive">
+                                <option value="">اختر المستوى</option>
+                                <option value="1 - غير مفضل">1 - غير مفضل</option>
+                                <option value="2 - قليل التفضيل">2 - قليل التفضيل</option>
+                                <option value="3 - محايد">3 - محايد</option>
+                                <option value="4 - مفضل">4 - مفضل</option>
+                                <option value="5 - مفضل جداً">5 - مفضل جداً</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">الاختبارات والتقييمات المستمرة</label>
+                            <select class="form-select" id="prefAssessments">
+                                <option value="">اختر المستوى</option>
+                                <option value="1 - غير مفضل">1 - غير مفضل</option>
+                                <option value="2 - قليل التفضيل">2 - قليل التفضيل</option>
+                                <option value="3 - محايد">3 - محايد</option>
+                                <option value="4 - مفضل">4 - مفضل</option>
+                                <option value="5 - مفضل جداً">5 - مفضل جداً</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- تفضيلات الجدول الزمني -->
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-clock"></i> تفضيلات الجدول الزمني</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">الوقت المفضل للمشاركة في المحاضرات المباشرة</label>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="صباحاً (8ص - 12م)" id="timeMorning">
+                                        <label class="form-check-label" for="timeMorning">صباحاً (8ص - 12م)</label>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="بعد الظهر (12م - 5م)" id="timeAfternoon">
+                                        <label class="form-check-label" for="timeAfternoon">بعد الظهر (12م - 5م)</label>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="مساءً (5م - 10م)" id="timeEvening">
+                                        <label class="form-check-label" for="timeEvening">مساءً (5م - 10م)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">أيام الأسبوع المفضلة للمحاضرات المباشرة</label>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="السبت" id="daySat">
+                                        <label class="form-check-label" for="daySat">السبت</label>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="الأحد" id="daySun">
+                                        <label class="form-check-label" for="daySun">الأحد</label>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="الإثنين" id="dayMon">
+                                        <label class="form-check-label" for="dayMon">الإثنين</label>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="الثلاثاء" id="dayTue">
+                                        <label class="form-check-label" for="dayTue">الثلاثاء</label>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="الأربعاء" id="dayWed">
+                                        <label class="form-check-label" for="dayWed">الأربعاء</label>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="الخميس" id="dayThu">
+                                        <label class="form-check-label" for="dayThu">الخميس</label>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="الجمعة" id="dayFri">
+                                        <label class="form-check-label" for="dayFri">الجمعة</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">المدة المثالية للمحاضرة الواحدة</label>
+                            <select class="form-select" id="sessionDuration">
+                                <option value="">اختر</option>
+                                <option value="30 دقيقة">30 دقيقة</option>
+                                <option value="45 دقيقة">45 دقيقة</option>
+                                <option value="ساعة واحدة">ساعة واحدة</option>
+                                <option value="ساعة ونصف">ساعة ونصف</option>
+                                <option value="ساعتين">ساعتين</option>
+                                <option value="مرونة حسب المحتوى">مرونة حسب المحتوى</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">عدد المحاضرات الأسبوعية المناسب</label>
+                            <select class="form-select" id="sessionsPerWeek">
+                                <option value="">اختر</option>
+                                <option value="1 محاضرة أسبوعياً">1 محاضرة أسبوعياً</option>
+                                <option value="2 محاضرات أسبوعياً">2 محاضرات أسبوعياً</option>
+                                <option value="3 محاضرات أسبوعياً">3 محاضرات أسبوعياً</option>
+                                <option value="أكثر من 3 محاضرات">أكثر من 3 محاضرات</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- تفضيلات أدوات ومنصات التعلم -->
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-laptop"></i> تفضيلات أدوات ومنصات التعلم</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">ما هي المنصات التي تفضل استخدامها للتعلم؟ (يمكن اختيار أكثر من واحدة)</label>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Zoom" id="platformZoom">
+                                        <label class="form-check-label" for="platformZoom">Zoom</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Microsoft Teams" id="platformTeams">
+                                        <label class="form-check-label" for="platformTeams">Microsoft Teams</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Google Meet" id="platformMeet">
+                                        <label class="form-check-label" for="platformMeet">Google Meet</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Webex" id="platformWebex">
+                                        <label class="form-check-label" for="platformWebex">Webex</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="منصة تعليمية مخصصة" id="platformCustom">
+                                        <label class="form-check-label" for="platformCustom">منصة تعليمية مخصصة</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="YouTube" id="platformYoutube">
+                                        <label class="form-check-label" for="platformYoutube">YouTube</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="أخرى" id="platformOther">
+                                        <label class="form-check-label" for="platformOther">أخرى</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3" id="otherPlatformDiv" style="display: none;">
+                            <label class="form-label">يرجى تحديد المنصات الأخرى</label>
+                            <input type="text" class="form-control" id="otherPlatforms" placeholder="اذكر المنصات التي تفضل استخدامها">
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">ما هي الأدوات المساعدة التي تفضل استخدامها خلال التدريب؟</label>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="السبورة التفاعلية" id="toolWhiteboard">
+                                        <label class="form-check-label" for="toolWhiteboard">السبورة التفاعلية</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="الاستطلاعات الفورية" id="toolPolls">
+                                        <label class="form-check-label" for="toolPolls">الاستطلاعات الفورية</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="غرف النقاش الفرعية" id="toolBreakout">
+                                        <label class="form-check-label" for="toolBreakout">غرف النقاش الفرعية</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="مشاركة الشاشة" id="toolScreenShare">
+                                        <label class="form-check-label" for="toolScreenShare">مشاركة الشاشة</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- أسلوب التعلم المفضل -->
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-brain"></i> أسلوب التعلم المفضل</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">كيف تفضل تلقي المعلومات الجديدة؟</label>
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <div class="learning-style">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="learningStyle" id="styleVisual" value="بصري (صور، رسوم بيانية، فيديوهات)">
+                                            <label class="form-check-label" for="styleVisual">
+                                                <strong>بصري (Visual)</strong> - أفضل التعلم عبر الصور والرسوم البيانية والفيديوهات
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="learning-style">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="learningStyle" id="styleAuditory" value="سمعي (استماع، مناقشات)">
+                                            <label class="form-check-label" for="styleAuditory">
+                                                <strong>سمعي (Auditory)</strong> - أفضل التعلم عبر الاستماع والمناقشات
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="learning-style">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="learningStyle" id="styleReading" value="قرائي (قراءة، تدوين ملاحظات)">
+                                            <label class="form-check-label" for="styleReading">
+                                                <strong>قرائي (Reading/Writing)</strong> - أفضل التعلم عبر القراءة وتدوين الملاحظات
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="learning-style">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="learningStyle" id="styleKinesthetic" value="حركي (تطبيق عملي، تمارين)">
+                                            <label class="form-check-label" for="styleKinesthetic">
+                                                <strong>حركي (Kinesthetic)</strong> - أفضل التعلم عبر التطبيق العملي والتمارين
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">كيف تفضل التفاعل مع المدرب؟</label>
+                            <select class="form-select" id="trainerInteraction">
+                                <option value="">اختر</option>
+                                <option value="الأسئلة المباشرة أثناء المحاضرة">الأسئلة المباشرة أثناء المحاضرة</option>
+                                <option value="الدردشة النصية">الدردشة النصية</option>
+                                <option value="جلسات أسئلة وأجوبة مخصصة">جلسات أسئلة وأجوبة مخصصة</option>
+                                <option value="البريد الإلكتروني للاستفسارات">البريد الإلكتروني للاستفسارات</option>
+                                <option value="منتدى للنقاش">منتدى للنقاش</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الاحتياجات التقنية -->
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-microchip"></i> الاحتياجات التقنية</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">نوع الجهاز المستخدم للتدريب</label>
+                            <select class="form-select" id="deviceType">
+                                <option value="">اختر</option>
+                                <option value="لاب توب (Laptop)">لاب توب (Laptop)</option>
+                                <option value="كمبيوتر مكتبي (Desktop)">كمبيوتر مكتبي (Desktop)</option>
+                                <option value="جهاز لوحي (Tablet)">جهاز لوحي (Tablet)</option>
+                                <option value="هاتف ذكي (Mobile)">هاتف ذكي (Mobile)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">نظام التشغيل</label>
+                            <select class="form-select" id="operatingSystem">
+                                <option value="">اختر</option>
+                                <option value="Windows">Windows</option>
+                                <option value="macOS">macOS</option>
+                                <option value="Linux">Linux</option>
+                                <option value="iOS/iPadOS">iOS/iPadOS</option>
+                                <option value="Android">Android</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">جودة الاتصال بالإنترنت</label>
+                            <select class="form-select" id="internetQuality">
+                                <option value="">اختر</option>
+                                <option value="عالية السرعة (Fiber/4G/5G)">عالية السرعة (Fiber/4G/5G)</option>
+                                <option value="متوسطة (ADSL)">متوسطة (ADSL)</option>
+                                <option value="منخفضة (محدودة)">منخفضة (محدودة)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">توفر كاميرا وميكروفون</label>
+                            <select class="form-select" id="hasCameraMic">
+                                <option value="">اختر</option>
+                                <option value="كاميرا وميكروفون متاحان">كاميرا وميكروفون متاحان</option>
+                                <option value="ميكروفون فقط">ميكروفون فقط</option>
+                                <option value="كاميرا فقط">كاميرا فقط</option>
+                                <option value="لا يتوفر أي منهما">لا يتوفر أي منهما</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- التوقعات الإضافية -->
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-comment-dots"></i> توقعات إضافية</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">ما هي أكثر 3 عوامل تحفزك على المشاركة الفعالة في التدريب؟</label>
+                            <textarea class="form-control" id="motivationFactors" rows="2" placeholder="اذكر العوامل التي تزيد من تفاعلك ومشاركتك"></textarea>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">ما هي الميزات التي تجعل تجربة التدريب عن بُعد مثالية بالنسبة لك؟</label>
+                            <textarea class="form-control" id="idealFeatures" rows="2" placeholder="اذكر الميزات التي ترغب في توفرها"></textarea>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">أي ملاحظات إضافية حول تفضيلاتك في طريقة التدريب؟</label>
+                            <textarea class="form-control" id="additionalNotes" rows="2" placeholder="ملاحظات أو استفسارات إضافية"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الإقرار -->
+                <div class="declaration-box">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="declarationCheck">
+                                <label class="form-check-label" for="declarationCheck">
+                                    أقر بأن جميع الإجابات المقدمة في هذا الاستبيان تعبر عن تفضيلاتي الحقيقية، وأوافق على استخدامها لغرض تصميم برنامج تدريبي يتناسب مع احتياجاتي وأسلوب تعلمي المفضل.
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">اسم المتدرب</label>
+                            <input type="text" class="form-control" id="declarantName" placeholder="الاسم الكامل">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">التاريخ</label>
+                            <input type="date" class="form-control" id="declarationDate" value="2026-03-26">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4 mb-4">
+                    <button class="btn btn-custom btn-lg" onclick="refreshPreview()"><i class="fas fa-sync-alt me-2"></i> تحديث المعاينة</button>
+                    <button class="btn btn-custom btn-lg mx-2" onclick="resetForm()"><i class="fas fa-undo me-2"></i> إعادة تعيين</button>
+                </div>
+            </div>
+
+            <!-- Tab 2: Preview -->
+            <div class="tab-pane fade" id="preview" role="tabpanel">
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-file-alt me-2"></i> معاينة تقرير تفضيلات طريقة التدريب</div>
+                    <div class="card-body" id="previewContent"></div>
+                </div>
+                <div class="text-center mb-4 no-print">
+                    <button class="btn btn-excel btn-lg mx-2" onclick="exportToExcel()"><i class="fas fa-file-excel me-2"></i> تصدير (Excel)</button>
+                    <button class="btn btn-pdf btn-lg mx-2" onclick="exportToPDF(event)"><i class="fas fa-file-pdf me-2"></i> تصدير التقرير (PDF)</button>
+                    <button class="btn btn-custom btn-lg mx-2" onclick="window.print()"><i class="fas fa-print me-2"></i> طباعة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer no-print">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 style="color: #52b788;">تكاليف - حلول أعمال ذكية</h5>
+                    <p style="color: #e4f2e4;">نقدم حلولاً متكاملة لتطوير المهارات المهنية للمحاسبين.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 style="color: #52b788;"><i class="fas fa-address-card me-2"></i>معلومات الاتصال</h5>
+                    <div class="contact-item"><i class="fas fa-map-marker-alt"></i> القاهرة</div>
+                    <div class="contact-item"><i class="fas fa-phone-alt"></i><a href="tel:+201044391177" class="footer-links">+20 104 439 1177</a></div>
+                    <div class="contact-item"><i class="fas fa-envelope"></i><a href="mailto:info@takalief.com" class="footer-links">info@takalief.com</a></div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 style="color: #52b788;"><i class="fas fa-share-alt me-2"></i>تابعنا على</h5>
+                    <div class="text-center">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row mt-3">
+                <div class="col-md-12 text-center">
+                    <p class="mb-0" style="color: #e4f2e4;"><i class="fas fa-copyright me-2" style="color: #52b788;"></i>2026 تكاليف - جميع الحقوق محفوظة</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="pdf-export-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // ============================================
+        // استبيان تفضيلات طريقة التدريب - تكاليف
+        // ============================================
+        
+        // عناصر التحكم في الحقول الديناميكية
+        document.getElementById('employmentStatus').addEventListener('change', function() {
+            document.getElementById('otherJobDiv').style.display = this.value === 'أخرى' ? 'block' : 'none';
+        });
+        
+        document.getElementById('platformOther').addEventListener('change', function() {
+            document.getElementById('otherPlatformDiv').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        // دوال مساعدة
+        function getFieldValue(id, defaultValue = '—') {
+            var element = document.getElementById(id);
+            return element && element.value.trim() !== '' ? element.value.trim() : defaultValue;
+        }
+        
+        function getCheckboxValues(prefix) {
+            var values = [];
+            document.querySelectorAll('input[type="checkbox"][id^="' + prefix + '"]').forEach(cb => {
+                if (cb.checked && cb.value) values.push(cb.value);
+            });
+            return values;
+        }
+        
+        function getSelectedTimes() {
+            var times = [];
+            if (document.getElementById('timeMorning')?.checked) times.push('صباحاً');
+            if (document.getElementById('timeAfternoon')?.checked) times.push('بعد الظهر');
+            if (document.getElementById('timeEvening')?.checked) times.push('مساءً');
+            return times;
+        }
+        
+        function getSelectedDays() {
+            var days = [];
+            ['daySat', 'daySun', 'dayMon', 'dayTue', 'dayWed', 'dayThu', 'dayFri'].forEach(id => {
+                if (document.getElementById(id)?.checked) days.push(document.getElementById(id).value);
+            });
+            return days;
+        }
+        
+        function getSelectedPlatforms() {
+            var platforms = [];
+            ['platformZoom', 'platformTeams', 'platformMeet', 'platformWebex', 'platformCustom', 'platformYoutube'].forEach(id => {
+                if (document.getElementById(id)?.checked) platforms.push(document.getElementById(id).value);
+            });
+            if (document.getElementById('platformOther')?.checked) {
+                var otherText = document.getElementById('otherPlatforms')?.value;
+                if (otherText) platforms.push(otherText);
+            }
+            return platforms;
+        }
+        
+        function getSelectedTools() {
+            var tools = [];
+            ['toolWhiteboard', 'toolPolls', 'toolBreakout', 'toolScreenShare'].forEach(id => {
+                if (document.getElementById(id)?.checked) tools.push(document.getElementById(id).value);
+            });
+            return tools;
+        }
+        
+        function getLearningStyle() {
+            var radios = document.getElementsByName('learningStyle');
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].checked) return radios[i].value;
+            }
+            return '—';
+        }
+        
+        function getPreferenceClass(value) {
+            if (value.includes('5')) return 'preference-high';
+            if (value.includes('4')) return 'preference-high';
+            if (value.includes('3')) return 'preference-medium';
+            return 'preference-low';
+        }
+        
+        // تحديث المعاينة
+        function refreshPreview() {
+            var times = getSelectedTimes();
+            var days = getSelectedDays();
+            var platforms = getSelectedPlatforms();
+            var tools = getSelectedTools();
+            var learningStyle = getLearningStyle();
+            
+            var previewHtml = `
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-user-graduate me-2"></i>البيانات الشخصية</h4>
+                    <div class="preview-item"><span class="preview-label">الاسم الثلاثي</span><span class="preview-value">${getFieldValue('fullName')}</span></div>
+                    <div class="preview-item"><span class="preview-label">البريد الإلكتروني</span><span class="preview-value">${getFieldValue('email')}</span></div>
+                    <div class="preview-item"><span class="preview-label">رقم الهاتف</span><span class="preview-value">${getFieldValue('phone')}</span></div>
+                    <div class="preview-item"><span class="preview-label">المدينة / المنطقة</span><span class="preview-value">${getFieldValue('city')}</span></div>
+                </div>
+                
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-info-circle me-2"></i>المعلومات الأساسية</h4>
+                    <div class="preview-item"><span class="preview-label">الوضع الوظيفي</span><span class="preview-value">${getFieldValue('employmentStatus')}${getFieldValue('otherJobStatus') ? ' (' + getFieldValue('otherJobStatus') + ')' : ''}</span></div>
+                    <div class="preview-item"><span class="preview-label">ساعات العمل الأسبوعية</span><span class="preview-value">${getFieldValue('workHours')}</span></div>
+                    <div class="preview-item"><span class="preview-label">الخبرة في التدريب عن بُعد</span><span class="preview-value">${getFieldValue('previousOnlineTraining')}</span></div>
+                </div>
+                
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-chalkboard me-2"></i>تفضيلات طريقة التدريس</h4>
+                    <div class="preview-item"><span class="preview-label">المحاضرات المباشرة</span><span class="preview-value"><span class="preference-badge ${getPreferenceClass(getFieldValue('prefLiveLectures'))}">${getFieldValue('prefLiveLectures')}</span></span></div>
+                    <div class="preview-item"><span class="preview-label">المحتوى المسجل</span><span class="preview-value"><span class="preference-badge ${getPreferenceClass(getFieldValue('prefRecorded'))}">${getFieldValue('prefRecorded')}</span></span></div>
+                    <div class="preview-item"><span class="preview-label">التدريب العملي</span><span class="preview-value"><span class="preference-badge ${getPreferenceClass(getFieldValue('prefPractical'))}">${getFieldValue('prefPractical')}</span></span></div>
+                    <div class="preview-item"><span class="preview-label">دراسات الحالة</span><span class="preview-value"><span class="preference-badge ${getPreferenceClass(getFieldValue('prefCaseStudies'))}">${getFieldValue('prefCaseStudies')}</span></span></div>
+                    <div class="preview-item"><span class="preview-label">الأنشطة التفاعلية</span><span class="preview-value"><span class="preference-badge ${getPreferenceClass(getFieldValue('prefInteractive'))}">${getFieldValue('prefInteractive')}</span></span></div>
+                    <div class="preview-item"><span class="preview-label">التقييمات المستمرة</span><span class="preview-value"><span class="preference-badge ${getPreferenceClass(getFieldValue('prefAssessments'))}">${getFieldValue('prefAssessments')}</span></span></div>
+                </div>
+                
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-clock me-2"></i>تفضيلات الجدول الزمني</h4>
+                    <div class="preview-item"><span class="preview-label">الوقت المفضل</span><span class="preview-value">${times.length > 0 ? times.join('، ') : '—'}</span></div>
+                    <div class="preview-item"><span class="preview-label">الأيام المفضلة</span><span class="preview-value">${days.length > 0 ? days.join('، ') : '—'}</span></div>
+                    <div class="preview-item"><span class="preview-label">مدة المحاضرة المثالية</span><span class="preview-value">${getFieldValue('sessionDuration')}</span></div>
+                    <div class="preview-item"><span class="preview-label">عدد المحاضرات أسبوعياً</span><span class="preview-value">${getFieldValue('sessionsPerWeek')}</span></div>
+                </div>
+                
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-laptop me-2"></i>تفضيلات أدوات ومنصات التعلم</h4>
+                    <div class="preview-item"><span class="preview-label">المنصات المفضلة</span><span class="preview-value">${platforms.length > 0 ? platforms.join('، ') : '—'}</span></div>
+                    <div class="preview-item"><span class="preview-label">الأدوات المساعدة</span><span class="preview-value">${tools.length > 0 ? tools.join('، ') : '—'}</span></div>
+                </div>
+                
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-brain me-2"></i>أسلوب التعلم المفضل</h4>
+                    <div class="preview-item"><span class="preview-label">أسلوب التعلم</span><span class="preview-value">${learningStyle}</span></div>
+                    <div class="preview-item"><span class="preview-label">طريقة التفاعل مع المدرب</span><span class="preview-value">${getFieldValue('trainerInteraction')}</span></div>
+                </div>
+                
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-microchip me-2"></i>الاحتياجات التقنية</h4>
+                    <div class="preview-item"><span class="preview-label">نوع الجهاز</span><span class="preview-value">${getFieldValue('deviceType')}</span></div>
+                    <div class="preview-item"><span class="preview-label">نظام التشغيل</span><span class="preview-value">${getFieldValue('operatingSystem')}</span></div>
+                    <div class="preview-item"><span class="preview-label">جودة الإنترنت</span><span class="preview-value">${getFieldValue('internetQuality')}</span></div>
+                    <div class="preview-item"><span class="preview-label">كاميرا وميكروفون</span><span class="preview-value">${getFieldValue('hasCameraMic')}</span></div>
+                </div>
+                
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-comment-dots me-2"></i>توقعات إضافية</h4>
+                    <div class="preview-item"><span class="preview-label">عوامل التحفيز</span><span class="preview-value">${getFieldValue('motivationFactors')}</span></div>
+                    <div class="preview-item"><span class="preview-label">الميزات المثالية</span><span class="preview-value">${getFieldValue('idealFeatures')}</span></div>
+                    <div class="preview-item"><span class="preview-label">ملاحظات إضافية</span><span class="preview-value">${getFieldValue('additionalNotes')}</span></div>
+                </div>
+                
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-signature me-2"></i>الإقرار والتوقيع</h4>
+                    <div class="preview-item"><span class="preview-label">اسم المتدرب</span><span class="preview-value">${getFieldValue('declarantName')}</span></div>
+                    <div class="preview-item"><span class="preview-label">التاريخ</span><span class="preview-value">${getFieldValue('declarationDate')}</span></div>
+                    <div class="preview-item"><span class="preview-label">حالة الإقرار</span><span class="preview-value">${document.getElementById('declarationCheck').checked ? '✓ تم الإقرار' : 'لم يتم الإقرار'}</span></div>
+                </div>
+                
+                <div class="preview-card text-center">
+                    <hr>
+                    <p style="color: #1e4a3b; font-weight: 600;"><i class="fas fa-check-circle me-2"></i>تم تعبئة استبيان تفضيلات طريقة التدريب بنجاح</p>
+                    <p class="text-muted small">تاريخ الإصدار: ${new Date().toLocaleDateString('ar-EG')}</p>
+                </div>
+            `;
+            document.getElementById('previewContent').innerHTML = previewHtml;
+        }
+        
+        function resetForm() {
+            if (confirm('هل أنت متأكد من إعادة تعيين جميع البيانات؟')) location.reload();
+        }
+        
+        function exportToExcel() {
+            var traineeName = getFieldValue('fullName', 'متدرب');
+            var times = getSelectedTimes();
+            var days = getSelectedDays();
+            var platforms = getSelectedPlatforms();
+            var tools = getSelectedTools();
+            var learningStyle = getLearningStyle();
+            
+            var excelData = [
+                ['استبيان تفضيلات طريقة التدريب - تكاليف'],
+                ['تاريخ التقرير', new Date().toLocaleDateString('ar-EG')],
+                ['اسم المتدرب', traineeName],
+                [],
+                ['1. البيانات الشخصية'],
+                ['الاسم الثلاثي', getFieldValue('fullName')],
+                ['البريد الإلكتروني', getFieldValue('email')],
+                ['رقم الهاتف', getFieldValue('phone')],
+                ['المدينة / المنطقة', getFieldValue('city')],
+                [],
+                ['2. المعلومات الأساسية'],
+                ['الوضع الوظيفي', getFieldValue('employmentStatus') + (getFieldValue('otherJobStatus') ? ' (' + getFieldValue('otherJobStatus') + ')' : '')],
+                ['ساعات العمل الأسبوعية', getFieldValue('workHours')],
+                ['الخبرة في التدريب عن بُعد', getFieldValue('previousOnlineTraining')],
+                [],
+                ['3. تفضيلات طريقة التدريس'],
+                ['المحاضرات المباشرة', getFieldValue('prefLiveLectures')],
+                ['المحتوى المسجل', getFieldValue('prefRecorded')],
+                ['التدريب العملي', getFieldValue('prefPractical')],
+                ['دراسات الحالة', getFieldValue('prefCaseStudies')],
+                ['الأنشطة التفاعلية', getFieldValue('prefInteractive')],
+                ['التقييمات المستمرة', getFieldValue('prefAssessments')],
+                [],
+                ['4. تفضيلات الجدول الزمني'],
+                ['الوقت المفضل', times.join('، ')],
+                ['الأيام المفضلة', days.join('، ')],
+                ['مدة المحاضرة المثالية', getFieldValue('sessionDuration')],
+                ['عدد المحاضرات أسبوعياً', getFieldValue('sessionsPerWeek')],
+                [],
+                ['5. أدوات ومنصات التعلم'],
+                ['المنصات المفضلة', platforms.join('، ')],
+                ['الأدوات المساعدة', tools.join('، ')],
+                [],
+                ['6. أسلوب التعلم المفضل'],
+                ['أسلوب التعلم', learningStyle],
+                ['طريقة التفاعل مع المدرب', getFieldValue('trainerInteraction')],
+                [],
+                ['7. الاحتياجات التقنية'],
+                ['نوع الجهاز', getFieldValue('deviceType')],
+                ['نظام التشغيل', getFieldValue('operatingSystem')],
+                ['جودة الإنترنت', getFieldValue('internetQuality')],
+                ['كاميرا وميكروفون', getFieldValue('hasCameraMic')],
+                [],
+                ['8. توقعات إضافية'],
+                ['عوامل التحفيز', getFieldValue('motivationFactors')],
+                ['الميزات المثالية', getFieldValue('idealFeatures')],
+                ['ملاحظات إضافية', getFieldValue('additionalNotes')],
+                [],
+                ['9. الإقرار'],
+                ['اسم المتدرب', getFieldValue('declarantName')],
+                ['التاريخ', getFieldValue('declarationDate')],
+                ['حالة الإقرار', document.getElementById('declarationCheck').checked ? 'تم الإقرار' : 'لم يتم الإقرار']
+            ];
+            
+            var wb = XLSX.utils.book_new();
+            var ws = XLSX.utils.aoa_to_sheet(excelData);
+            XLSX.utils.book_append_sheet(wb, ws, 'تفضيلات طريقة التدريب');
+            XLSX.writeFile(wb, `Training_Preferences_${traineeName.replace(/\s/g, '_')}_${new Date().toISOString().slice(0,10)}.xlsx`);
+            alert('تم تصدير استبيان Excel بنجاح!');
+        }
+        
+        async function exportToPDF(event) {
+            try {
+                var exportBtn = event.target;
+                var originalText = exportBtn.innerHTML;
+                exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> جاري إعداد التقرير...';
+                exportBtn.disabled = true;
+                
+                var pdfContainer = document.getElementById('pdf-export-container');
+                pdfContainer.innerHTML = '';
+                pdfContainer.style.opacity = '1';
+                pdfContainer.style.position = 'absolute';
+                pdfContainer.style.top = '0';
+                pdfContainer.style.left = '0';
+                pdfContainer.style.zIndex = '9999';
+                
+                var traineeName = getFieldValue('fullName', 'غير محدد');
+                var currentDate = new Date().toLocaleDateString('ar-EG');
+                var times = getSelectedTimes();
+                var days = getSelectedDays();
+                var platforms = getSelectedPlatforms();
+                var tools = getSelectedTools();
+                var learningStyle = getLearningStyle();
+                
+                var fullHtml = `
+                    <div class="pdf-cover">
+                        <h1>استبيان تفضيلات طريقة التدريب</h1>
+                        <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-top: 30px;">
+                            <p><i class="fas fa-user-graduate me-2"></i>المتدرب: ${traineeName}</p>
+                            <p><i class="fas fa-envelope me-2"></i>البريد الإلكتروني: ${getFieldValue('email')}</p>
+                            <p><i class="fas fa-phone me-2"></i>رقم الهاتف: ${getFieldValue('phone')}</p>
+                            <p><i class="fas fa-calendar me-2"></i>تاريخ التقرير: ${currentDate}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="pdf-section-title">1. المعلومات الشخصية والأساسية</h2>
+                        <table class="pdf-table"><tbody>
+                            <tr><td style="text-align:right"><strong>الاسم الثلاثي</strong></td><td>${getFieldValue('fullName')}</td></tr>
+                            <tr><td style="text-align:right"><strong>الوضع الوظيفي</strong></td><td>${getFieldValue('employmentStatus')}${getFieldValue('otherJobStatus') ? ' (' + getFieldValue('otherJobStatus') + ')' : ''}</td></tr>
+                            <tr><td style="text-align:right"><strong>ساعات العمل الأسبوعية</strong></td><td>${getFieldValue('workHours')}</td></tr>
+                            <tr><td style="text-align:right"><strong>الخبرة في التدريب عن بُعد</strong></td><td>${getFieldValue('previousOnlineTraining')}</td></tr>
+                        </tbody></table>
+                        
+                        <h2 class="pdf-section-title">2. تفضيلات طريقة التدريس</h2>
+                        <table class="pdf-table"><tbody>
+                            <tr><td style="text-align:right"><strong>المحاضرات المباشرة</strong></td><td>${getFieldValue('prefLiveLectures')}</td></tr>
+                            <tr><td style="text-align:right"><strong>المحتوى المسجل</strong></td><td>${getFieldValue('prefRecorded')}</td></tr>
+                            <tr><td style="text-align:right"><strong>التدريب العملي</strong></td><td>${getFieldValue('prefPractical')}</td></tr>
+                            <tr><td style="text-align:right"><strong>دراسات الحالة</strong></td><td>${getFieldValue('prefCaseStudies')}</td></tr>
+                            <tr><td style="text-align:right"><strong>الأنشطة التفاعلية</strong></td><td>${getFieldValue('prefInteractive')}</td></tr>
+                            <tr><td style="text-align:right"><strong>التقييمات المستمرة</strong></td><td>${getFieldValue('prefAssessments')}</td></tr>
+                        </tbody></table>
+                        
+                        <h2 class="pdf-section-title">3. تفضيلات الجدول الزمني</h2>
+                        <table class="pdf-table"><tbody>
+                            <tr><td style="text-align:right"><strong>الوقت المفضل</strong></td><td>${times.join('، ') || '—'}</td></tr>
+                            <tr><td style="text-align:right"><strong>الأيام المفضلة</strong></td><td>${days.join('، ') || '—'}</td></tr>
+                            <tr><td style="text-align:right"><strong>مدة المحاضرة المثالية</strong></td><td>${getFieldValue('sessionDuration')}</td></tr>
+                            <tr><td style="text-align:right"><strong>عدد المحاضرات أسبوعياً</strong></td><td>${getFieldValue('sessionsPerWeek')}</td></tr>
+                        </tbody></table>
+                        
+                        <h2 class="pdf-section-title">4. أدوات ومنصات التعلم</h2>
+                        <table class="pdf-table"><tbody>
+                            <tr><td style="text-align:right"><strong>المنصات المفضلة</strong></td><td>${platforms.join('، ') || '—'}</td></tr>
+                            <tr><td style="text-align:right"><strong>الأدوات المساعدة</strong></td><td>${tools.join('، ') || '—'}</td></tr>
+                        </tbody></table>
+                        
+                        <h2 class="pdf-section-title">5. أسلوب التعلم المفضل</h2>
+                        <table class="pdf-table"><tbody>
+                            <tr><td style="text-align:right"><strong>أسلوب التعلم</strong></td><td>${learningStyle}</td></tr>
+                            <tr><td style="text-align:right"><strong>طريقة التفاعل مع المدرب</strong></td><td>${getFieldValue('trainerInteraction')}</td></tr>
+                        </tbody></table>
+                        
+                        <h2 class="pdf-section-title">6. الاحتياجات التقنية</h2>
+                        <table class="pdf-table"><tbody>
+                            <tr><td style="text-align:right"><strong>نوع الجهاز</strong></td><td>${getFieldValue('deviceType')}</td></tr>
+                            <tr><td style="text-align:right"><strong>نظام التشغيل</strong></td><td>${getFieldValue('operatingSystem')}</td></tr>
+                            <tr><td style="text-align:right"><strong>جودة الإنترنت</strong></td><td>${getFieldValue('internetQuality')}</td></tr>
+                            <tr><td style="text-align:right"><strong>كاميرا وميكروفون</strong></td><td>${getFieldValue('hasCameraMic')}</td></tr>
+                        </tbody></table>
+                        
+                        <h2 class="pdf-section-title">7. توقعات إضافية</h2>
+                        <table class="pdf-table"><tbody>
+                            <tr><td style="text-align:right"><strong>عوامل التحفيز</strong></td><td>${getFieldValue('motivationFactors')}</td></tr>
+                            <tr><td style="text-align:right"><strong>الميزات المثالية</strong></td><td>${getFieldValue('idealFeatures')}NonNull
+                            </tr>
+                            <tr>
+                                <td style="text-align:right"><strong>ملاحظات إضافية</strong></td>
+                                <td>${getFieldValue('additionalNotes')}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h2 class="pdf-section-title">8. الإقرار والتوقيع</h2>
+                    <table class="pdf-table"><tbody>
+                        <tr><td style="text-align:right"><strong>اسم المتدرب</strong></td><td>${getFieldValue('declarantName')}</td></tr>
+                        <tr><td style="text-align:right"><strong>التاريخ</strong></td><td>${getFieldValue('declarationDate')}</td></tr>
+                        <tr><td style="text-align:right"><strong>حالة الإقرار</strong></td><td>${document.getElementById('declarationCheck').checked ? 'تم الإقرار' : 'لم يتم الإقرار'}</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="page-break-before: always; margin-top: 40px;">
+                <div class="pdf-footer">
+                    <div style="font-size: 20px; font-weight: 700; color: #52b788;">تكاليف - حلول أعمال ذكية</div>
+                    <hr style="width: 150px; margin: 15px auto;">
+                    <p>تم تعبئة هذا الاستبيان لتحديد تفضيلات طريقة التدريب</p>
+                    <p>تاريخ الإصدار: ${currentDate}</p>
+                    <p style="margin-top: 20px;">توقيع المتدرب: _________________________</p>
+                    <p>جميع الحقوق محفوظة © 2026</p>
+                </div>
+            </div>
+        `;
+        
+        var pdfWrapper = document.createElement('div');
+        pdfWrapper.className = 'pdf-wrapper';
+        pdfWrapper.innerHTML = fullHtml;
+        pdfContainer.appendChild(pdfWrapper);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        var canvas = await html2canvas(pdfContainer, { scale: 2, backgroundColor: '#ffffff', logging: false });
+        var imgData = canvas.toDataURL('image/png');
+        var imgWidth = 210;
+        var pageHeight = 297;
+        var imgHeight = (canvas.height * imgWidth) / canvas.width;
+        var heightLeft = imgHeight;
+        var position = 0;
+        
+        var pdf = new jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+        heightLeft -= pageHeight;
+        while (heightLeft > 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+            heightLeft -= pageHeight;
+        }
+        
+        pdf.save(`Training_Preferences_${traineeName.replace(/[^\u0600-\u06FFa-zA-Z0-9]/g, '_')}_${new Date().toISOString().slice(0,10)}.pdf`);
+        
+        pdfContainer.innerHTML = '';
+        pdfContainer.style.opacity = '0';
+        pdfContainer.style.position = 'fixed';
+        pdfContainer.style.top = '-99999px';
+        
+        exportBtn.innerHTML = originalText;
+        exportBtn.disabled = false;
+        alert('تم تصدير استبيان PDF بنجاح!');
+    } catch (error) {
+        alert('حدث خطأ: ' + error.message);
+        var exportBtn = event.target;
+        exportBtn.innerHTML = '<i class="fas fa-file-pdf me-2"></i> تصدير التقرير (PDF)';
+        exportBtn.disabled = false;
+    }
+}
+
+window.onload = function() {
+    refreshPreview();
+};
+</script>
+</body>
+</html>
